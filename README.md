@@ -1,6 +1,6 @@
 # Skin Temperature Bias Prediction with TensorFlow and Keras
 
-Fluctuations in sea surface temperature (SST) play a critical role in shaping the Earth's weather and climate systems. For example, phenomena like El Niño-Southern Oscillation (ENSO) are considered major drivers of year-to-year variations in global climate patterns. Being able to accurately forecast changes in SST over extended periods and predict extreme marine heatwave events is critical to NOAA's mission, especially as the planet experiences ongoing warming trends. This machine learning project predicts skin temperature biases using TensorFlow and Keras. The project follows several key steps for data processing, model creation, training, and evaluation.
+Fluctuations in sea surface temperature (SST) play a critical role in shaping the Earth's weather and climate systems. For example, phenomena like El Niño-Southern Oscillation (ENSO) are considered major drivers of year-to-year variations in global climate patterns. Being able to accurately forecast changes in SST over extended periods and predict extreme marine heatwave events is critical to NOAA's mission, especially as the planet experiences ongoing warming trends. This machine learning project predicts skin temperature biases using TensorFlow and Keras. 
 
 # Getting Started
  
