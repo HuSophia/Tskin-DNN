@@ -5,14 +5,14 @@ Fluctuations in sea surface temperature (SST) play a critical role in shaping th
 # Getting Started
  
 - **Data Preparation**: The code starts by reading data from NetCDF files, which contains simulation and observation data. Key variables such as latitude, longitude, skin temperature, and other meteorological parameters are extracted.
--**Data Preprocessing**: Data is prepared for training by selecting only ocean samples, and the data is normalized to ensure consistent scaling.
--**Train-Test Split**: The dataset is split into a training set and a testing set to assess the model's performance.
--**Model Definition**: A neural network model with two hidden layers is defined using Keras. The architecture includes multiple neurons in each layer, with a regression output layer for predicting skin temperature bias.
--**Model Training**: The model is compiled with a specified loss function and optimizer. It incorporates early stopping to prevent overfitting and enhance training efficiency.
--**Model Persistence**: The trained model, its architecture (in JSON format), and weights are saved to disk for future use.
--**Visualization**: The code generates plots showing the training and validation history, which includes mean absolute error (MAE) and mean squared error (MSE) over epochs.
--**Model Evaluation**: The model's performance is evaluated on the testing data, and the MAE is printed to assess the accuracy of the predictions.
--**Histogram Plotting**: The code creates histograms of model predictions, allowing for visual analysis of the bias predictions.
+- **Data Preprocessing**: Data is prepared for training by selecting only ocean samples, and the data is normalized to ensure consistent scaling.
+- **Train-Test Split**: The dataset is split into a training set and a testing set to assess the model's performance.
+- **Model Definition**: A neural network model with two hidden layers is defined using Keras. The architecture includes multiple neurons in each layer, with a regression output layer for predicting skin temperature bias.
+- **Model Training**: The model is compiled with a specified loss function and optimizer. It incorporates early stopping to prevent overfitting and enhance training efficiency.
+- **Model Persistence**: The trained model, its architecture (in JSON format), and weights are saved to disk for future use.
+- **Visualization**: The code generates plots showing the training and validation history, which includes mean absolute error (MAE) and mean squared error (MSE) over epochs.
+- **Model Evaluation**: The model's performance is evaluated on the testing data, and the MAE is printed to assess the accuracy of the predictions.
+- **Histogram Plotting**: The code creates histograms of model predictions, allowing for visual analysis of the bias predictions.
 Usage
 
 # NOAA Internal Usage
