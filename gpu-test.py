@@ -29,7 +29,7 @@ dir_in   = "/ccsopen/proj/gen175/mirs/data/daily_data/"
 file_list_sim = glob.glob(dir_in + "/mirs_img_*.nc")
 dir_obs       = dir_in
 
-out_dir       = "/gpfs/wolf/gen175/proj-shared/mirs/sliu//4GPU/"
+out_dir       = "/gpfs/wolf/gen175/proj-shared/mirs/shu//4GPU/"
 
 
 entire_model_name = out_dir + "Entire_Model_node200_"+ date +".h5"
