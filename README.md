@@ -2,7 +2,7 @@
 
 Fluctuations in sea surface temperature (SST) play a critical role in shaping the Earth's weather and climate systems. For example, phenomena like El Niño-Southern Oscillation (ENSO) are considered major drivers of year-to-year variations in global climate patterns. Being able to accurately forecast changes in SST over extended periods and predict extreme marine heatwave events is critical to NOAA's mission, especially as the planet experiences ongoing warming trends. This machine learning project predicts skin temperature biases using TensorFlow and Keras. 
 
-# Getting Started
+# Deployment
  
 - **Data Preparation**: The code starts by reading data from NetCDF files, which contains simulation and observation data. Key variables such as latitude, longitude, skin temperature, and other meteorological parameters are extracted.
 - **Data Preprocessing**: Data is prepared for training by selecting only ocean samples, and the data is normalized to ensure consistent scaling.
