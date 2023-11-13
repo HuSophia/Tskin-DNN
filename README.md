@@ -13,7 +13,6 @@ Fluctuations in sea surface temperature (SST) play a critical role in shaping th
 - **Visualization**: The code generates plots showing the training and validation history, which includes mean absolute error (MAE) and mean squared error (MSE) over epochs.
 - **Model Evaluation**: The model's performance is evaluated on the testing data, and the MAE is printed to assess the accuracy of the predictions.
 - **Histogram Plotting**: The code creates histograms of model predictions, allowing for visual analysis of the bias predictions.
-Usage
 
 # NOAA Internal Usage
 - Make sure you have the required libraries, such as TensorFlow, Keras, and NumPy, installed.
