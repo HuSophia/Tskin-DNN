@@ -20,10 +20,5 @@ Fluctuations in sea surface temperature (SST) play a critical role in shaping th
 - Run the code, which will execute data processing, model training, evaluation, and visualization.
 - Examine the saved model, history plots, and prediction histograms to assess the performance of the skin temperature bias prediction model.
 
-# License
-**All Rights Reserved**
-
-This code is protected by copyright law, and all rights are reserved. No permissions are granted to use, modify, or distribute this code. This project is not open source, and it is intended for private or internal use only. Any usage beyond that requires explicit written consent from the code's creator.
-
 # Acknowledgments
 I would like to express my sincere gratitude to the NOAA MiRS team for their invaluable contributions to our weekly meetings. Their insights and thoughtful discussions have played a significant role in advancing code production and fostering a collaborative and productive atmosphere. I am truly appreciative of the dedication and expertise of the team, which has made this endeavor all the more meaningful.
