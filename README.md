@@ -22,12 +22,12 @@ The project aligns with NOAA's mission to provide high-quality environmental inf
 
 ## Dependencies
 This project is implemented using Python 3.x and requires the following packages:
-`tensorflow`
-`numpy`
-`pandas`
-`matplotlib`
-`netCDF4`
-`scikit-learn`
+- `tensorflow`
+- `numpy`
+- `pandas`
+- `matplotlib`
+- `netCDF4`
+- `scikit-learn`
 
 # Getting Started
 ## Installation
