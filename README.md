@@ -1,4 +1,4 @@
-# mirs-tskin-nn
+# sst-bias-dnn : SST Bias Correction DNN for NOAA MiRS
 
 Training script for the **DNN-TB** experiment from Liu et al. (2022), which predicts ocean sea surface temperature (SST) directly from NOAA-20 ATMS brightness temperatures using a deep neural network. Developed during an R&D internship at NOAA.
 
