@@ -1,58 +1,139 @@
-# Sea Surface Temperature (SST) Bias Correction using Neural Networks
+# mirs-tskin-nn
 
-Accurate Sea Surface Temperature (SST) measurements are fundamental to understanding the Earth's climate system, as SST directly influences global weather patterns, ocean currents, and the health of marine ecosystems. Research has shown that even slight variations in SST can significantly impact atmospheric circulation, driving phenomena such as El Niño and La Niña which, in turn, affect global climate patterns. Reliable SST data is also crucial for improving climate models which rely on accurate oceanic temperatures to forecast future climate scenarios. This project focuses on predicting the SST bias — the difference between SST values derived from satellite simulations (`TSkin_sim`) and ground-based observations (`TSkin_obs`). Addressing this bias is essential for enhancing the accuracy of climate monitoring and prediction efforts, ultimately contributing to a better understanding of climate change dynamics.
+Training script for the **DNN-TB** experiment from Liu et al. (2022), which predicts ocean sea surface temperature (SST) directly from NOAA-20 ATMS brightness temperatures using a deep neural network. Developed during an R&D internship at NOAA.
 
+> Liu, S., Grassotti, C., Liu, Q., Zhou, Y., & Lee, Y.-K. (2022). Improvement of MiRS Sea Surface Temperature Retrievals Using a Machine Learning Approach. *IEEE J. Sel. Topics Appl. Earth Observ. Remote Sens.*, 15, 1857–1868. https://doi.org/10.1109/JSTARS.2022.3151002
 
-### Why Correct SST Biases?
+---
 
-Satellite observations are a primary source of global SST data due to their wide spatial coverage and frequent sampling. However, biases often exist in satellite-derived SST measurements due to factors such as
-- **Instrument Calibration**: Differences in sensor sensitivity can lead to systematic errors in temperature readings.
-- **Atmospheric Effects**: The presence of clouds, water vapor, aerosols, and other atmospheric constituents can interfere with the satellite’s infrared or microwave readings.
-- **Surface Conditions**: Variability in surface types (e.g., sea ice, land proximity) can affect the accuracy of SST estimates.
-  
-These biases can lead to inaccuracies in climate models and weather forecasting. Therefore, developing reliable correction methods is essential to ensure the integrity of SST data for research and operational applications.
+## Background
 
-### Machine Learning for Bias Correction
+The NOAA Microwave Integrated Retrieval System (MiRS) retrieves atmospheric and surface parameters from satellite microwave observations using a 1D-variational algorithm. Despite its all-weather capability, MiRS SST retrievals from cross-track instruments like NOAA-20 ATMS have known limitations: cold biases at high latitudes, scan angle dependence across the swath, and coastal artifacts.
 
-Traditional methods for correcting SST biases often rely on statistical models or physical algorithms that require extensive calibration and validation. Machine learning, particularly deep learning, has shown promise in this domain due to its ability to capture complex, non-linear relationships between multiple variables.
+The paper compared three machine learning approaches to correct these biases. This script implements **DNN-TB** — the experiment that predicts SST directly from the 22 ATMS brightness temperature channels, without relying on MiRS physical retrievals as inputs.
 
-In this project, we utilize a neural network to predict and correct SST biases. This approach leverages a dataset that includes both simulation and observation data, allowing the model to learn the underlying patterns associated with bias formation. By using input features like brightness temperatures, zenith angles, and atmospheric variables, the model aims to deliver more accurate SST estimates, enhancing the utility of satellite-derived climate data.
+| Experiment | Inputs | Target |
+|---|---|---|
+| DNN-Retrieval | MiRS retrieved SST + emissivity (22 ch) + CLW + TPW + lat + lon + cos(angle) | SST residual |
+| **DNN-TB** ← *this script* | Brightness temperatures (22 ch) + lat + lon + cos(angle) | SST |
+| MLReg-TB | Same as DNN-TB | SST |
 
-The project aligns with NOAA's mission to provide high-quality environmental information that supports weather prediction, climate monitoring, and ecosystem protection.
+---
 
-## Dependencies
-This project is implemented using Python 3.x and requires the following packages:
-- `tensorflow`
-- `numpy`
-- `pandas`
-- `matplotlib`
-- `netCDF4`
-- `scikit-learn`
+## Key findings (Liu et al. 2022)
 
-# Getting Started
-## Installation
-To install required packages, you can use the following command:
+| Method | Std dev — January | Std dev — July |
+|---|---|---|
+| MiRS operational | 3.22 K | 3.02 K |
+| **DNN-TB** ← *this script* | **2.15 K** | **2.27 K** |
+| DNN-Retrieval | 1.80 K | 1.92 K |
+| MLReg-TB | 2.76 K | 3.01 K |
+
+DNN-TB reduced retrieval error by ~30% over the operational baseline and eliminated scan angle dependence. DNN-Retrieval performed better overall because MiRS physical retrievals contain information beyond what raw brightness temperatures alone can provide. The paper recommends stratified monthly training for best operational performance.
+
+---
+
+## Model architecture
+
+Two hidden layers of 200 ReLU nodes, trained with RMSprop (lr=0.001), MSE loss, and early stopping (patience=100, max 1000 epochs). Inputs normalized by training set mean and standard deviation.
+
 ```
-pip install tensorflow numpy pandas matplotlib netCDF4 scikit-learn
+Input (25)  →  Dense(200, ReLU)  →  Dense(200, ReLU)  →  Output (1)
+[lon, lat, tbu1–tbu22, cos(zenith)]
 ```
-Make sure you have access to the netCDF files provided by NOAA. These files contain both satellite simulation data (`mirs_img_*.nc`) and observation data (`obs_img_*.nc`). Each file contains variables related to SST and atmospheric conditions, e.g. `Latitude`/`Longitude`, `Sfc_type`, `TSkin`, `TPW`, `CLW`, `LZ_angle`, `Emis`, `YM`. 
 
-## Data Preprocessing
-First, the script reads simulation and observation data from netCDF files and extracts key variables from the data. Then, the data is filtered to include only ocean samples (i.e. `Sfc_type = 0) to ensure the model focuses on oceanic SST predictions. Relevant simulation and observation data are combined and cleaned to remove missing or invalid values (e.g. SST values less than -900). The cleaned dataset is split evenly into training and testing sets. Lastly, the data is normalized based on training set statistics to standardize the input features for improved model performance.
+---
 
-## Model Architecture
-The model is a feedforward neural network (FNN) built using Tensorflow/Keras with the following layers:
-- **Input Layer**: contains 25 input features (latitude, longitude, brightness temperatures from 22 channels, local zenith angle)
-- **Hidden Layers**: 2 dense layers with 200 nodes each using ReLU activation
-- **Output Layer**: a single node predicting SST bias
+## Usage
 
-## Training
-The model is compiled using RMSprop optimizer with Mean Squared Error (MSE) as the loss function. Training runs for 1000 epochs with early stopping to prevent overfitting. Performance is assessed using Mean Absolute Error (MAE) and MSE on both training and validation sets. The `plot_history` function visualizes learning curves, tracking training and validation errors over epochs.
+Update the paths at the top of `train_dnn_tb.py`:
 
-## Results
-The output directory includes the trained neural network model (`.h5` format) and MSE/MAE plots for analysis.  
-**Note**: Ensure adequate memory and computing resources to manage the large dataset.
+```python
+date     = "12days"
+dir_in   = "/path/to/mirs/data/"
+out_dir  = "/path/to/output/"
+```
 
-## Acknowledgement
-Special thanks to the NOAA MiRS team for their insights and support in advancing this project!
+Then run:
 
+```bash
+python train_dnn_tb.py
+```
+
+---
+
+## Required data files
+
+| File pattern | Description |
+|---|---|
+| `mirs_img_*.nc` | Simulated MIRS IMG files |
+| `obs_img_*.nc` | Observed MIRS IMG files (collocated ATMS) |
+
+The paper trained on 12 days of NOAA-20 data, one per month in 2020 (~21 million ocean samples).
+
+---
+
+## Outputs
+
+| File | Description |
+|---|---|
+| `Entire_Model_node200_<tag>.h5` | Full saved model |
+| `model_node200_<tag>.json` | Model architecture |
+| `model_node200_<tag>.h5` | Model weights |
+| `history_model_node200_<tag>.csv` | Per-epoch training history |
+| `MAE_model_node200_patience100.png` | MAE learning curve |
+| `MSE_model_node200_patience100.png` | MSE learning curve |
+
+---
+
+## Requirements
+
+```
+tensorflow>=2.10
+numpy
+pandas
+matplotlib
+scikit-learn
+netCDF4
+```
+
+Install with:
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## Notes
+
+- Multi-GPU training via `tf.distribute.MirroredStrategy` is enabled by default; comment out the GPU block for single-GPU or CPU runs
+- Only ocean pixels (`Sfc_type == 0`) with valid TSkin in both sim and obs are used
+- Rows with any fill values (< −900) are dropped before training
+
+---
+
+## Contributors
+
+Methodology, experimental design, and published results are from Liu et al. (2022). Copyright to this code implementation is held by the author.
+
+---
+
+## Acknowledgements
+
+Special thanks to the NOAA MIRS team for data access and scientific guidance. This work was supported in part by NOAA grants NA19NES4320002 and NA19OAR4320073, and by the Joint Polar Satellite System.
+
+---
+
+## Citation
+
+```bibtex
+@article{liu2022mirs,
+  author  = {Liu, Shuyan and Grassotti, Christopher and Liu, Quanhua and Zhou, Yan and Lee, Yong-Keun},
+  title   = {Improvement of {MiRS} Sea Surface Temperature Retrievals Using a Machine Learning Approach},
+  journal = {IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing},
+  year    = {2022},
+  volume  = {15},
+  pages   = {1857--1868},
+  doi     = {10.1109/JSTARS.2022.3151002}
+}
+```
